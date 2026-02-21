@@ -211,8 +211,8 @@
 		window.onload = async function() { // load list on startup
 			
 			// use sheetdb to test locally; use local file when uploading back into github (firefox Hates when i use the local file locally but the online db can only be polled so many times in a month)
-			const url = "https://sheetdb.io/api/v1/nosiqphdfjqxw";
-			// const url ="./character_list.json";
+			// const url = "https://sheetdb.io/api/v1/nosiqphdfjqxw";
+			const url ="./character_list.json";
 
 			try {
 				const response = await fetch(url);
@@ -475,4 +475,5 @@
 		}
 	</script>
 </body>
+
 </html>
