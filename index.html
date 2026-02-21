@@ -148,8 +148,50 @@
 
 		const button = document.getElementById("button");
 
-		const tiering = new Map([
-			[]
+		const tiering = new Map([ // used to get the tiers in english, rather than numbers and -/+ for low/high
+			["11-C", "Low Hypoverse Level"],
+			["11-B", "Hypoverse Level"],
+			["11-A", "High Hypoverse Level"],
+
+			["10-C", "Below Average Human Level"],
+			["10-B", "Human Level"],
+			["10-A", "Athlete Level"],
+
+			["9-C", "Street Level"],
+			["9-B", "Wall Level"],
+			["9-A", "Small Building Level"],
+
+			["8-C", "Building Level"],
+			["8-B", "City Block Level"],
+			["8-A", "Multi-City Block Level"],
+
+			["7-C", "Town Level"],
+			["7-B", "City Level"],
+			["7-A", "Mountain Level"],
+
+			["6-C", "Island Level"],
+			["6-B", "Country Level"],
+			["6-A", "Continent Level"],
+
+			["5-C", "Moon Level"],
+			["5-B", "Planet Level"],
+			["5-A", "Large Planet Level"],
+
+			["4-C", "Star Level"],
+			["4-B", "Solar System Level"],
+			["4-A", "Multi-Solar System Level"],
+
+			["3-C", "Galaxy Level"],
+			["3-B", "Multi-Galaxy Level"],
+			["3-A", "Universe Level"],
+
+			["2-C", "Low Multiverse Level"],
+			["2-B", "Multiverse Level"],
+			["2-A", "Multiverse Level+"],
+
+			["1-C", "Complex Multiverse Level"],
+			["1-B", "Hyperverse Level"],
+			["1-A", "Outerverse Level"]
 		])
 
 		var list = []; // Used as the list of characters
@@ -168,8 +210,9 @@
 
 		window.onload = async function() { // load list on startup
 			
-			// const url = "https://sheetdb.io/api/v1/nosiqphdfjqxw";
-			const url ="./character_list.json";
+			// use sheetdb to test locally; use local file when uploading back into github (firefox Hates when i use the local file locally but the online db can only be polled so many times in a month)
+			const url = "https://sheetdb.io/api/v1/nosiqphdfjqxw";
+			// const url ="./character_list.json";
 
 			try {
 				const response = await fetch(url);
@@ -295,6 +338,22 @@
 
 			// charDesc = rawMap.get("Blurb");
 
+			// plugging charPower into the tiering system to get it in english
+			var charPlTl;
+			var lastLetter = charPower.substring(charPower.length - 1, charPower.length);
+			console.log(lastLetter);
+			if (lastLetter == "+" || lastLetter == "-") { // low/high differentiated by -/+ on the spreadsheet
+				// console.log("slipped into the high low chjeck");
+				charPlTl = tiering.get(charPower.substring(0, charPower.length - 1));
+				if (lastLetter == "+") {
+					charPlTl = "High-" + charPlTl;
+				} else {
+					charPlTl = "Low-" + charPlTl;
+				}
+			} else {
+				charPlTl = tiering.get(charPower);
+			}
+
 			return new Map([ // making a new map to hand back to the poor bastard that calls this function
 				["num", num], //just in case i need it
 				["name", charName],
@@ -303,7 +362,8 @@
 				["image", charImg],
 				["media", charMedia],
 				["series", charSeries], //atp theres no point in tracking if theres multiple forms since the variation has already been chosen
-				["desc", rawMap.get("Blurb")]
+				["desc", rawMap.get("Blurb")],
+				["powerFull", charPlTl]
 			]);
 		}
 
@@ -349,13 +409,13 @@
 			char2 = generateCharacter();
 			updateCards();
 
-			charPower1.innerHTML = char1.get("power");
+			charPower1.innerHTML = char1.get("power") + ": " + char1.get("powerFull");
 			charPower2.innerHTML = "";
 		}
 
 		function showPower() {
-			charPower1.innerHTML = char1.get("power");
-			charPower2.innerHTML = char2.get("power");
+			charPower1.innerHTML = char1.get("power") + ": " + char1.get("powerFull");
+			charPower2.innerHTML = char2.get("power") + ": " + char2.get("powerFull");
 		}
 
 		function win() {
@@ -394,8 +454,8 @@
 			var friendPL = friend.get("power");
 			var enemyPL = enemy.get("power");
 
-			// console.log(friendPL);
-			// console.log(enemyPL);
+			console.log(friendPL);
+			console.log(enemyPL);
 
 			if (parseInt(friendPL.substring(0, friendPL.indexOf("-"))) <= parseInt(enemyPL.substring(0, enemyPL.indexOf("-")))) { // my ugly ass comparative ifs. checks numbers
 				// should have been an else if but oh well
