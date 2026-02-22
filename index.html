@@ -3,15 +3,19 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
+	<title>Higher or Lower: Powerscaling Edition</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+
 
 	<style>
 		div#main {
-			padding-top: 5%;
 			display:flex;
 			justify-content: center;
+			height: 50%;
 		}
+
 		div.charContainer {
 			display: grid;
 			height: 100%;
@@ -37,26 +41,27 @@
 		}
 
 		div.mid {
-			padding-top: 10%;
+			padding-top: 2%;
 			width: 10%;
 		}
 
-		img {
+		img.card-img-top {
 			height: 600px;
-			width: 600px;
+			width: 100%;
 			object-fit: contain;
 			display: flex;
 			justify-content: center;
 			border-bottom: 3px groove black;
 		}
 
-		.card {
+		.char-card {
 			visibility: hidden;
 			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /* having to care about css continues to evade me. thank you w3schools for just giving me a box shadow to use*/
+			max-height: 60%;
 		}
 
-		.card-body {
-			height: "1000px";
+		.char-card:hover {
+			transform: scale(1.02);
 		}
 
 		@keyframes fade-in {
@@ -68,35 +73,57 @@
 			0%		{opacity: 1}
 			100%	{opacity: 0}
 		}
+
+		#header {
+			height: 10%;
+			display: flex;
+			justify-content: center;
+		}
+
+		.mid-text {
+			text-align: center;
+		}
+
+		#top-text-in-mid {
+			padding-bottom: 30%;
+		}
+
+		#button {
+			width: 100%;
+			text-align: center;
+			align-self: center;
+			margin-bottom: 10%;
+		}
+
+		#filterCard {
+			margin-top: 10%;
+			max-height: 400px;
+			display: flex;
+			overflow-y: scroll;
+			margin: auto;
+		}
+
+		.filterCheckbox {
+			width: 15%;
+			display: flex;
+		}
+
+		.filterLabels {
+			display: flex;
+			align-self: left;
+		}
+
 	</style>
 </head>
 <body>
 
-	<!-- <div class="charContainer">
-		<article class="char1 grid">
-			<h2>Could...</h2>
-			<img id="charImg1" src="*" alt="*" height="300">
-			<h1 id="charName1"></h1>
-			<p id="charSeries1"></p>
-		</article>
-		
-		<div class="mid grid">
-			<button class="input" onclick="newFight()">Generate 2 New Characters</button>
-
-			<button class="input">Yes</button>
-			<button class="input">No</button>
-		</div>
-
-		<article class="char2 grid">
-			<h2>...Beat...</h2>
-			<img id="charImg2" src="*" alt="*" height="300">
-			<h1 id="charName2"></h1>
-			<p id="charSeries2"></p>
-		</article>		
-	</div> -->
+	<div id="header">
+		<img src="images/header/higher-or-lower.gif" alt="Higher or lower:" class="gifs">
+		<img src="images/header/powerscaling-edition.gif" alt="Powerscaling Edition" class="gifs">
+	</div>
 
 	<div id="main">
-		<div class="card char1 grid" onclick="guess(0)">
+		<div class="card char1 grid char-card" onclick="guess(0)">
 			<img src="*" alt="" class="card-img-top" id="charImg1">
 			<div class="card-body">
 				<h3 class="card-title" id="charName1"></h3>
@@ -108,16 +135,26 @@
 
 
 		<div class="mid grid">
-			<button class="input" onclick="newFight()" id="button">Generate 2 New Characters</button>
+			<h2 class="mid-text" id="top-text-in-mid"><b>Who Would Win ?</b></h2>
 
-			<p id="highest-score"></p>
+			<button class="input" onclick="newFight()" id="button">Start</button>			
 
-			<p id="streak">Score: 0</p>
+			<p id="highest-score" class="mid-text"></p>
+
+			<p id="streak" class="mid-text">Score: 0</p>
+
+			<button data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">Series Filter (Please avoid spoilersd...)</button>
+
+			<div class="collapse" id="filters">
+				<div class="card" id="filterCard">
+
+				</div>
+			</div>
 		</div>
 
 
-		<div class="card char2 grid">
-			<img src="*" alt="" class="card-img-top" id="charImg2" onclick="guess(1)">
+		<div class="card char2 grid char-card" onclick="guess(1)">
+			<img src="*" alt="" class="card-img-top" id="charImg2">
 			<div class="card-body">
 				<h3 class="card-title" id="charName2"></h3>
 				<h5 class="card-subtitle" id="charSeries2"></h5>
@@ -147,6 +184,8 @@
 		const cards = document.getElementsByClassName("card");
 
 		const button = document.getElementById("button");
+
+		const filterDropdown = document.getElementById("filterCard");
 
 		const tiering = new Map([ // used to get the tiers in english, rather than numbers and -/+ for low/high
 			["11-C", "Low Hypoverse Level"],
@@ -192,7 +231,10 @@
 			["1-C", "Complex Multiverse Level"],
 			["1-B", "Hyperverse Level"],
 			["1-A", "Outerverse Level"]
-		])
+		]);
+
+		var seriesList = [];
+		var filterList = [];
 
 		var list = []; // Used as the list of characters
 
@@ -211,8 +253,8 @@
 		window.onload = async function() { // load list on startup
 			
 			// use sheetdb to test locally; use local file when uploading back into github (firefox Hates when i use the local file locally but the online db can only be polled so many times in a month)
-			// const url = "https://sheetdb.io/api/v1/nosiqphdfjqxw";
-			const url ="./character_list.json";
+			const url = "https://sheetdb.io/api/v1/nosiqphdfjqxw";
+			// const url ="./character_list.json";
 
 			try {
 				const response = await fetch(url);
@@ -226,6 +268,30 @@
 			} catch (error) {
 				console.error(error.message)
 			}
+
+			for (let i = 0; i < list.length; i++) { //this feels unholy, but i dont want to have to manually curate a list of series with each update to the database. and alas, it generates the array quickly
+				var map = new Map(Object.entries(list[i]));
+				if (!seriesList.includes(map.get("Series Name"))) {
+					seriesList.push(map.get("Series Name"));
+				}		
+			}
+
+			for (let i = 0; i < seriesList.length; i++) {
+				var label = document.createElement("label");
+				var checkbox = document.createElement("input");
+				checkbox.setAttribute("type", "checkbox");
+				checkbox.setAttribute("id", "filterCheckbox" + i);
+				checkbox.setAttribute("class", "filterCheckbox");
+				checkbox.setAttribute("name", seriesList[i]);
+				checkbox.setAttribute("checked", true);
+				checkbox.setAttribute("onclick", "updateFilter(this)")
+				label.setAttribute("for", "filterCheckbox" + i);
+				label.setAttribute("class", "filterLabels")
+				label.innerHTML = seriesList[i];
+
+				filterDropdown.append(label, checkbox);
+
+			}
 		}
 
 		function getRandomInt(max) { // generate a random int
@@ -235,6 +301,11 @@
 		function generateCharacter() { // generate a random character
 			var num = getRandomInt(list.length - 0.01);
 			var rawMap = new Map(Object.entries(list[num]));
+
+			if (filterList.includes(rawMap.get("Series Name"))) {
+				console.log("rerolling");
+				return generateCharacter();
+			}
 
 			var charName = rawMap.get("Character Name");
 			var charPower = rawMap.get("Power Level");
@@ -253,7 +324,7 @@
 				do { // note all the line locations
 					var newLineName = charName.indexOf("|");
 
-					if (newLineName != -1) { // I guarantee this is not very efficient vs manually adding the extra forms but i dont want to make more spreadsheet rows because thats l;ike 20 for goku 
+					if (newLineName != -1) { // I guarantee this is not very efficient vs manually adding the extra forms but i dont want to make more spreadsheet rows because thats l;ike 20 for goku // Uopdate: guess who realised that means less rolls for goku and dragon ball as a whole
 						nameLineBreaks.push(newLineName); // writes down the break in names and then replaces it so it can check the next one
 						charName = charName.replace("|", "`");
 
@@ -367,12 +438,22 @@
 			]);
 		}
 
+		function updateFilter(box) {
+			if (!box.checked) {
+				filterList.push(box.name);
+			} else {
+				filterList.splice(filterList.indexOf(box.name), 1);
+			}
+		}
+
 		function updateCards() {
 			charNameElement1.innerHTML = char1.get("name");
 			charNameElement2.innerHTML = char2.get("name");
 
 			charImgElement1.src = char1.get("image");
 			charImgElement2.src = char2.get("image");
+
+			// charImgElement1.setAttribute("alt", char1.get("name")); //so i started doing this out and then realised the name is already there,
 
 			charSeries1.innerHTML = "From " + char1.get("series");
 			charSeries2.innerHTML = "From " + char2.get("series");
@@ -393,12 +474,12 @@
 
 			isPlaying = true;
 
-			charPower1.innerHTML = "";
-			charPower2.innerHTML = "";
-
 			char1 = generateCharacter();
 			char2 = generateCharacter();
 			
+			charPower1.innerHTML = char1.get("power") + ": " + char1.get("powerFull");
+			charPower2.innerHTML = "";
+
 			// console.log(char1.get("name") + " vs " + char2.get("name"));
 
 			updateCards();
@@ -454,8 +535,8 @@
 			var friendPL = friend.get("power");
 			var enemyPL = enemy.get("power");
 
-			console.log(friendPL);
-			console.log(enemyPL);
+			// console.log(friendPL);
+			// console.log(enemyPL);
 
 			if (parseInt(friendPL.substring(0, friendPL.indexOf("-"))) <= parseInt(enemyPL.substring(0, enemyPL.indexOf("-")))) { // my ugly ass comparative ifs. checks numbers
 				// should have been an else if but oh well
@@ -475,5 +556,4 @@
 		}
 	</script>
 </body>
-
 </html>
