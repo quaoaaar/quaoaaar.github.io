@@ -113,6 +113,10 @@
 			align-self: left;
 		}
 
+		.charDesc {
+			text-decoration-color: darkslategray;
+		}
+
 	</style>
 </head>
 <body>
@@ -137,7 +141,7 @@
 		<div class="mid grid">
 			<h2 class="mid-text" id="top-text-in-mid"><b>Who Would Win ?</b></h2>
 
-			<button class="input" onclick="newFight()" id="button">Start</button>			
+			<button class="input" onclick="newFight()" id="button">Start</button>
 
 			<p id="highest-score" class="mid-text"></p>
 
@@ -292,8 +296,6 @@
 				filterDropdown.append(label, checkbox);
 
 			}
-
-			console.log(list);
 		}
 
 		function getRandomInt(max) { // generate a random int
@@ -305,7 +307,7 @@
 			var rawMap = new Map(Object.entries(list[num]));
 
 			if (filterList.includes(rawMap.get("Series Name"))) {
-				console.log("rerolling");
+				// console.log("rerolling");
 				return generateCharacter();
 			}
 
@@ -333,8 +335,10 @@
 						powLineBreaks.push(charPower.indexOf("|"));
 						charPower = charPower.replace("|", "`");
 
-						stipLineBreaks.push(charStip.indexOf("|"));
-						charStip = charStip.replace("|", "`");
+						if (charStip != "") {
+							stipLineBreaks.push(charStip.indexOf("|"));
+							charStip = charStip.replace("|", "`");
+						}
 
 						imgLineBreaks.push(charImg.indexOf("|"));
 						charImg = charImg.replace("|", "`");
@@ -365,15 +369,15 @@
 				}
 				else {
 					newName = charName.substring(nameLineBreaks[variation - 1] + 1, nameLineBreaks[variation] - 1);
-					newPower = charName.substring(powLineBreaks[variation - 1] + 1, powLineBreaks[variation] - 1);
-					newImg = charName.substring(imgLineBreaks[variation - 1] + 1, imgLineBreaks[variation] - 1);
-					newStip = charName.substring(stipLineBreaks[variation - 1] + 1, stipLineBreaks[variation] - 1);
+					newPower = charPower.substring(powLineBreaks[variation - 1] + 1, powLineBreaks[variation] - 1);
+					newImg = charImg.substring(imgLineBreaks[variation - 1] + 1, imgLineBreaks[variation] - 1);
+					newStip = charStip.substring(stipLineBreaks[variation - 1] + 1, stipLineBreaks[variation] - 1);
 				}
 
 				charName = newName.trim();
 				charPower = newPower.trim();
 				charImg = newImg.trim();
-				charStip = newImg.trim();
+				charStip = newStip.trim();
 			}
 
 			charMedia = rawMap.get("Media");
@@ -414,7 +418,7 @@
 			// plugging charPower into the tiering system to get it in english
 			var charPlTl;
 			var lastLetter = charPower.substring(charPower.length - 1, charPower.length);
-			console.log(lastLetter);
+			// console.log(lastLetter);
 			if (lastLetter == "+" || lastLetter == "-") { // low/high differentiated by -/+ on the spreadsheet
 				// console.log("slipped into the high low chjeck");
 				charPlTl = tiering.get(charPower.substring(0, charPower.length - 1));
@@ -426,6 +430,16 @@
 			} else {
 				charPlTl = tiering.get(charPower);
 			}
+
+			if (charStip == "None") {
+				charStip = "";
+			}
+
+			if (charStip != "") {
+				charStip = "(" + charStip + ")";
+			}
+
+			console.log(charImg);
 
 			return new Map([ // making a new map to hand back to the poor bastard that calls this function
 				["num", num], //just in case i need it
@@ -492,13 +506,13 @@
 			char2 = generateCharacter();
 			updateCards();
 
-			charPower1.innerHTML = char1.get("power") + ": " + char1.get("powerFull");
+			charPower1.innerHTML = char1.get("power") + ": " + char1.get("powerFull") + " " + char1.get("stipulation");
 			charPower2.innerHTML = "";
 		}
 
 		function showPower() {
-			charPower1.innerHTML = char1.get("power") + ": " + char1.get("powerFull");
-			charPower2.innerHTML = char2.get("power") + ": " + char2.get("powerFull");
+			charPower1.innerHTML = char1.get("power") + ": " + char1.get("powerFull") + " " + char1.get("stipulation");
+			charPower2.innerHTML = char2.get("power") + ": " + char2.get("powerFull") + " " + char2.get("stipulation");
 		}
 
 		function win() {
@@ -558,6 +572,4 @@
 		}
 	</script>
 </body>
-
 </html>
-
