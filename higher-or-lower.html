@@ -122,8 +122,8 @@
 <body>
 
 	<div id="header">
-		<img src="images/header/higher-or-lower.gif" alt="Higher or lower:" class="gifs">
-		<img src="images/header/powerscaling-edition.gif" alt="Powerscaling Edition" class="gifs">
+		<img src="./higher-or-lower/images/header/higher-or-lower.gif" alt="Higher or lower:" class="gifs">
+		<img src="./higher-or-lower/images/header/powerscaling-edition.gif" alt="Powerscaling Edition" class="gifs">
 	</div>
 
 	<div id="main">
@@ -258,7 +258,7 @@
 			
 			// use sheetdb to test locally; use local file when uploading back into github (firefox Hates when i use the local file locally but the online db can only be polled so many times in a month)
 			// const url = "https://sheetdb.io/api/v1/nosiqphdfjqxw";
-			const url ="./character_list.json";
+			const url ="./higher-or-lower/character_list.json";
 
 			try {
 				const response = await fetch(url);
@@ -440,6 +440,7 @@
 			}
 
 			if (charImg.substring(0, 2) == "./") {
+				console.log("path update check");
 				charImg = "./higher-or-lower" + charImg.substring(1, charImg.length - 1);
 			}
 			if (charImg.substring(0, 17) != "./higher-or-lower") {
