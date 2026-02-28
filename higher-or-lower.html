@@ -439,6 +439,13 @@
 				charStip = "(" + charStip + ")";
 			}
 
+			if (charImg.substring(0, 2) == "./") {
+				charImg = "./higher-or-lower" + charImg.substring(1, charImg.length - 1);
+			}
+			if (charImg.substring(0, 17) != "./higher-or-lower") {
+				charImg = "./higher-or-lower/" + charImg;
+			}
+
 			console.log(charImg);
 
 			return new Map([ // making a new map to hand back to the poor bastard that calls this function
