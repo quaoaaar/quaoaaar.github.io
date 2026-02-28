@@ -439,11 +439,11 @@
 				charStip = "(" + charStip + ")";
 			}
 
-			if (charImg.substring(0, 2) == "./") {
+			if (charImg.trim().substring(0, 2) == "./") {
 				console.log("path update check");
 				charImg = "./higher-or-lower" + charImg.substring(1, charImg.length + 1);
 			}
-			if (charImg.substring(0, 17) != "./higher-or-lower") {
+			if (charImg.trim().substring(0, 17) != "./higher-or-lower") {
 				charImg = "./higher-or-lower/" + charImg;
 			}
 
