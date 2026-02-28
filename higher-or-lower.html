@@ -441,7 +441,7 @@
 
 			if (charImg.substring(0, 2) == "./") {
 				console.log("path update check");
-				charImg = "./higher-or-lower" + charImg.substring(1, charImg.length - 1);
+				charImg = "./higher-or-lower" + charImg.substring(1, charImg.length);
 			}
 			if (charImg.substring(0, 17) != "./higher-or-lower") {
 				charImg = "./higher-or-lower/" + charImg;
