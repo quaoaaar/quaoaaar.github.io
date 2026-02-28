@@ -496,6 +496,8 @@
 				document.querySelector(".char2").style.visibility = "visible";
 			}
 
+			updateCards(); // runninng to flush out images
+
 			button.style.visibility = "hidden";
 
 			isPlaying = true;
@@ -513,6 +515,7 @@
 
 		function nextCharacter() {
 			char1 = char2;
+			charImgElement2.src = "";
 			char2 = generateCharacter();
 			updateCards();
 
